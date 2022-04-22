@@ -3,6 +3,6 @@
    require_once 'functions/helper.php';
    require_once 'views/header.php';
 
-   require_once 'view/$page.php';
+   require_once "views/$page.php";
 
    require_once 'views/footer.php';
