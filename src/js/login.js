@@ -8,6 +8,8 @@ const iniciarAplicacion = () => {
 
 const loginEventos = () => {
    const loginForm =  document.querySelector('#login-form');
+   const emailInput = document.querySelector('#email');
+   const passwordInput = document.querySelector('#password');
 
    loginForm.onsubmit = (e) => {
       e.preventDefault();
@@ -33,18 +35,36 @@ const loginEventos = () => {
             const errorResponse = JSON.parse(this.response);
 
             if (errorResponse.email) {
-               const emailError = document.querySelector("#email-error");
+               const emailError = document.createElement('span');
+               emailError.id = "email-error";
                emailError.textContent = `${errorResponse.email}`;
-               emailError.classList.add('show-error');
+               emailError.classList.add('error-text');
+               emailInput.parentElement.appendChild(emailError);
 
             } else if (errorResponse.password) {
-               const passwordError = document.querySelector("#password-error");
+               const passwordError = document.createElement('span');
+               passwordError.id = "password-error";
                passwordError.textContent = `${errorResponse.password}`;
-               passwordError.classList.add('show-error');
+               passwordError.classList.add('error-text');
+               passwordInput.parentElement.appendChild(passwordError);
             }
          }
       }
       httpRequest.send(`email=${formData.email}&password=${formData.password}`);
    };
   
+   emailInput.addEventListener('change', () => {
+      borrarElementos('#email-error');
+   });
+
+   passwordInput.addEventListener('change', () => {
+      borrarElementos('#password-error');
+   });
+}
+
+function borrarElementos(elemento) {
+   let errorText = document.querySelectorAll(elemento);
+   if (errorText.length > 0) {
+      errorText.forEach(elm => elm.remove());
+   }
 }
