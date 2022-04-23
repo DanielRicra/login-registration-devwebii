@@ -21,17 +21,26 @@ const loginEventos = () => {
 
       httpRequest.onload = function () {
          if (httpRequest.status === 200 && this.getResponseHeader('status').includes('202')) {
-            const email = JSON.parse(this.response);
-            document.cookie = `email=${email}`;
+            const userData = JSON.parse(this.response);
+            
+            sessionStorage.setItem("id", userData.user_id);
+            sessionStorage.setItem("email", userData.email);
+            sessionStorage.setItem("name", userData.name);
+            
             window.location.href = "?p=inicio";
+
          } else if (this.getResponseHeader('status').includes('404')) {
             const errorResponse = JSON.parse(this.response);
             console.log(errorResponse);
             if (errorResponse.email) {
-               document.querySelector("#email-error").textContent = `${errorResponse.email}`;
+               const emailError = document.querySelector("#email-error");
+               emailError.textContent = `${errorResponse.email}`;
+               emailError.classList.add('show-error');
 
             } else if (errorResponse.password) {
-               document.querySelector("#password-error").textContent = `${errorResponse.password}`;
+               const passwordError = document.querySelector("#password-error");
+               passwordError.textContent = `${errorResponse.password}`;
+               passwordError.classList.add('show-error');
             }
          }
       }
