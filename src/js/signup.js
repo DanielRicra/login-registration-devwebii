@@ -10,9 +10,9 @@ const signupEventos = () => {
    const signupForm =  document.querySelector('#signup-form');
    const nombreInput = document.querySelector('#name');
    const emailInput = document.querySelector('#email');
+   const passwordInput = document.querySelector('#password');
    const dniInput = document.querySelector('#dni');
    const dobInput = document.querySelector('#dob');
-   const passwordInput = document.querySelector('#password');
 
    signupForm.onsubmit = (e) => {
       e.preventDefault();
@@ -41,15 +41,18 @@ const signupEventos = () => {
             const errorResponse = JSON.parse(this.response);
             console.log(errorResponse);
             if (errorResponse.email) {
-               const emailError = document.querySelector("#email-error");
+               const emailError = document.createElement('span');
+               emailError.id = "email-error";
                emailError.textContent = `${errorResponse.email}`;
-               emailError.classList.add('show-error');
-
+               emailError.classList.add('error-text');
+               emailInput.parentElement.appendChild(emailError);
             } 
             if (errorResponse.dni) {
-               const passwordError = document.querySelector("#dni-error");
-               passwordError.textContent = `${errorResponse.dni}`;
-               passwordError.classList.add('show-error');
+               const dniError = document.createElement('span');
+               dniError.id = "dni-error";
+               dniError.textContent = `${errorResponse.dni}`;
+               dniError.classList.add('error-text');
+               dniInput.parentElement.appendChild(dniError);
             }
          }
       }
@@ -60,49 +63,34 @@ const signupEventos = () => {
    //===================EVENTOS INPUTS ========================
    nombreInput.addEventListener('change', (e) => {
       let nombre = e.target.value;
-      if (esUnNombreValido(nombre)) {
-         console.log("Ok name")
-      } else {
-         console.log("Nombre debe ser mayor a 2 caracteres")
-      }
+      esUnNombreValido(nombre);
    });
 
    emailInput.addEventListener('change', (e) => {
-      if(esUnEmailValido(e.target.value)) {
-         console.log("Valid email")
-      } else {
-         console.log("invalid emaiñ")
-      }
+      esUnEmailValido(e.target.value);
    });
 
    dniInput.addEventListener('change', (e) => {
-      if(esUnDniValido(e.target.value)) {
-         console.log("Valid DNI")
-      } else {
-         console.log("invalid DNI")
-      }
+      esUnDniValido(e.target.value);
    });
 
-   dobInput.addEventListener('change', (e) => {
-      if  (esUnaFechaValida(e.target.value)) {
-         console.log("fecha valida");
-      } else {
-         console.log("fecha invalida");
-      }
+   dobInput.addEventListener('input', (e) => {
+      esUnaFechaValida(e.target.value);
    });
    
    passwordInput.addEventListener('change', (e) => {
       let password = e.target.value;
-      if (esUnPasswordValido(password)) {
-         console.log("Ok password")
-      } else {
-         console.log("Password debe tener al menos 6 caracteres")
-      }
+      esUnPasswordValido(password);
    });
 
 }
 //=========================Funciones de validacion===============================
 function validarFormData(formData) {
+   esUnEmailValido(formData.email);
+   esUnDniValido(formData.dni);
+   esUnaFechaValida(formData.dob);
+   esUnPasswordValido(formData.password) ;
+   esUnNombreValido(formData.name);
    if (esUnEmailValido(formData.email) && esUnDniValido(formData.dni)
    && esUnaFechaValida(formData.dob) && esUnPasswordValido(formData.password) 
    && esUnNombreValido(formData.name)) {
@@ -113,40 +101,99 @@ function validarFormData(formData) {
 }
 
 function esUnNombreValido(name) {
+   const nameInput = document.querySelector('#name');
+
+   borrarElementos('.error-name');
+
    if (name.length >= 3) {
+      nameInput.classList.remove('error');
       return true;
    }
+   const span = document.createElement('SPAN');
+   span.textContent = "Nombre debe tener al menos 3 caracteres";
+   span.className = 'error-text error-name';
+   nameInput.parentElement.appendChild(span);
+   nameInput.classList.add('error');
    return false;
 }
 
 function esUnPasswordValido(password) {
+   const passwordInput = document.querySelector('#password');
+
+   borrarElementos('.error-password');
+
    if (password.length >= 6) {
+      passwordInput.classList.remove('error');
       return true;
    } 
+   const span = document.createElement('SPAN');
+   span.textContent = "Contraseña debe tener al menos 6 caracteres";
+   span.className = 'error-text error-password';
+   passwordInput.parentElement.appendChild(span);
+   passwordInput.classList.add('error');
    return false;
 }
 
 function esUnEmailValido(email) {
+   const emailInput = document.querySelector('#email');
    const formatoEmail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+   
+   borrarElementos('.error-email');
+   borrarElementos('#email-error');
+
    if (formatoEmail.test(email)) {
+      emailInput.classList.remove('error');
       return true;
    }
+   const span = document.createElement('SPAN');
+   span.textContent = "Email no valido";
+   span.className = 'error-text error-email';
+   emailInput.parentElement.appendChild(span);
+   emailInput.classList.add('error');
    return false;
 }
 
 function esUnDniValido(dni) {
+   const dniInput = document.querySelector('#dni');
    const formatoDni = /^[0-9]*$/;
+   
+   borrarElementos('.error-dni');
+   borrarElementos('#dni-error');
+   
    if (dni.length === 8 && formatoDni.test(dni)) {
+      dniInput.classList.remove('error');
       return true;
    }
+   
+   const span = document.createElement('SPAN');
+   span.textContent = "DNI no valido";
+   span.className = 'error-text error-dni';
+   dniInput.parentElement.appendChild(span);
+   dniInput.classList.add('error');
    return false;
 }
 
 function esUnaFechaValida(date) {
+   const fechaInput = document.querySelector('#dob');
    let esFechaValida = Date.parse(date);
 
+   borrarElementos('.error-date');
+
    if (isNaN(esFechaValida)){ 
+      const span = document.createElement('SPAN');
+      span.textContent = "Fecha no valida";
+      span.className = 'error-text error-date';
+      fechaInput.parentElement.appendChild(span);
+      fechaInput.classList.add('error');
       return false;
    } 
+   fechaInput.classList.remove('error');
    return true;
+}
+
+function borrarElementos(elemento) {
+   let errorText = document.querySelectorAll(elemento);
+   if (errorText.length > 0) {
+      errorText.forEach(elm => elm.remove());
+   }
 }
