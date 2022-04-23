@@ -17,7 +17,8 @@
       if (!empty($userData)) {
          if (password_verify($password, $userData[0]["password"])){
             header("status: 202 Accepted");
-            echo json_encode($email);
+            unset($userData[0]["password"]);   
+            echo json_encode($userData[0]);
             exit;
          } else {
             $error["password"] = "Contraseña incorrecta";
