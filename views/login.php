@@ -21,7 +21,6 @@
    </div>
 </div>
 
-
 <?php 
    $script = "<script src='src/js/login.js'></script>";
 ?>

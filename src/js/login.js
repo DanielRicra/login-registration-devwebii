@@ -13,7 +13,6 @@ const loginEventos = () => {
 
    loginForm.onsubmit = (e) => {
       e.preventDefault();
-
       let formData = Object.fromEntries(new FormData(loginForm).entries());
 
       const httpRequest = new XMLHttpRequest();
@@ -30,7 +29,6 @@ const loginEventos = () => {
             sessionStorage.setItem("name", userData.name);
             
             window.location.href = "?p=inicio";
-
          } else if (this.getResponseHeader('status').includes('404')) {
             const errorResponse = JSON.parse(this.response);
 
